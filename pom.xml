@@ -4,6 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <version>2.3.1.RELEASE</version>
+    </parent>
+
     <groupId>pl.adamboguszewski</groupId>
     <artifactId>tictactoe-telegram-bot</artifactId>
     <packaging>pom</packaging>
@@ -18,5 +24,6 @@
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
     </properties>
+
 
 </project>
