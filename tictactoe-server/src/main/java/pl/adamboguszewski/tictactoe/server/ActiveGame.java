@@ -4,27 +4,27 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class ActiveGameStatus {
+public class ActiveGame {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Player xPlayer;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Player oPlayer;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     List<Round> rounds;
 
     private Long chatId;
 
-    public ActiveGameStatus() {
+    public ActiveGame() {
     }
 
-    public ActiveGameStatus(Long id, Player xPlayer, Player oPlayer, List<Round> rounds, Long chatId) {
+    public ActiveGame(Long id, Player xPlayer, Player oPlayer, List<Round> rounds, Long chatId) {
         this.id = id;
         this.xPlayer = xPlayer;
         this.oPlayer = oPlayer;
