@@ -4,13 +4,10 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class ActiveGame {
-
+public class FinishedGame {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    // [TODO] Add constraint for unique pair (xPlayer, oPlayer)
     @ManyToOne(cascade = CascadeType.ALL)
     private Player xPlayer;
 
@@ -22,15 +19,18 @@ public class ActiveGame {
 
     private Long chatId;
 
-    public ActiveGame() {
+    boolean didXWin;
+
+    public FinishedGame() {
     }
 
-    public ActiveGame(Long id, Player xPlayer, Player oPlayer, List<Round> rounds, Long chatId) {
-        this.id = id;
-        this.xPlayer = xPlayer;
-        this.oPlayer = oPlayer;
-        this.rounds = rounds;
-        this.chatId = chatId;
+    public FinishedGame(ActiveGame game, boolean didXWin) {
+        this.id = game.getId();
+        this.xPlayer = game.getxPlayer();
+        this.oPlayer = game.getoPlayer();
+        this.rounds = game.getRounds();
+        this.chatId = game.getChatId();
+        this.didXWin = didXWin;
     }
 
     public Long getId() {
@@ -71,5 +71,13 @@ public class ActiveGame {
 
     public void setChatId(Long chatId) {
         this.chatId = chatId;
+    }
+
+    public boolean isDidXWin() {
+        return didXWin;
+    }
+
+    public void setDidXWin(boolean didXWin) {
+        this.didXWin = didXWin;
     }
 }
