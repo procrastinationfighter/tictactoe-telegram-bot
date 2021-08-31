@@ -1,35 +1,36 @@
 package pl.adamboguszewski.tictactoe.server;
 
-import pl.adamboguszewski.tictactoe.api.Tile;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 public class ActiveGameStatus {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ElementCollection(targetClass = Tile.class)
-    @Enumerated(EnumType.STRING)
-    private List<Tile> boardState;
+    @ManyToOne
+    private Player xPlayer;
 
-    private Long XPlayerId;
-    private String XPlayerName;
+    @ManyToOne
+    private Player oPlayer;
 
-    private Long OPlayerId;
-    private String OPlayerName;
-
-    private Integer roundNumber;
-    private Long nextPlayerToMove;
+    @OneToMany
+    List<Round> rounds;
 
     private Long chatId;
 
-    private LocalDateTime beginDateTime;
-    private LocalDateTime lastMoveDateTime;
+    public ActiveGameStatus() {
+    }
+
+    public ActiveGameStatus(Long id, Player xPlayer, Player oPlayer, List<Round> rounds, Long chatId) {
+        this.id = id;
+        this.xPlayer = xPlayer;
+        this.oPlayer = oPlayer;
+        this.rounds = rounds;
+        this.chatId = chatId;
+    }
 
     public Long getId() {
         return id;
@@ -39,60 +40,28 @@ public class ActiveGameStatus {
         this.id = id;
     }
 
-    public List<Tile> getBoardState() {
-        return boardState;
+    public Player getxPlayer() {
+        return xPlayer;
     }
 
-    public void setBoardState(List<Tile> boardState) {
-        this.boardState = boardState;
+    public void setxPlayer(Player xPlayer) {
+        this.xPlayer = xPlayer;
     }
 
-    public Long getXPlayerId() {
-        return XPlayerId;
+    public Player getoPlayer() {
+        return oPlayer;
     }
 
-    public void setXPlayerId(Long XPlayerId) {
-        this.XPlayerId = XPlayerId;
+    public void setoPlayer(Player oPlayer) {
+        this.oPlayer = oPlayer;
     }
 
-    public String getXPlayerName() {
-        return XPlayerName;
+    public List<Round> getRounds() {
+        return rounds;
     }
 
-    public void setXPlayerName(String XPlayerName) {
-        this.XPlayerName = XPlayerName;
-    }
-
-    public Long getOPlayerId() {
-        return OPlayerId;
-    }
-
-    public void setOPlayerId(Long OPlayerId) {
-        this.OPlayerId = OPlayerId;
-    }
-
-    public String getOPlayerName() {
-        return OPlayerName;
-    }
-
-    public void setOPlayerName(String OPlayerName) {
-        this.OPlayerName = OPlayerName;
-    }
-
-    public Integer getRoundNumber() {
-        return roundNumber;
-    }
-
-    public void setRoundNumber(Integer roundNumber) {
-        this.roundNumber = roundNumber;
-    }
-
-    public Long getNextPlayerToMove() {
-        return nextPlayerToMove;
-    }
-
-    public void setNextPlayerToMove(Long nextPlayerToMove) {
-        this.nextPlayerToMove = nextPlayerToMove;
+    public void setRounds(List<Round> rounds) {
+        this.rounds = rounds;
     }
 
     public Long getChatId() {
@@ -101,21 +70,5 @@ public class ActiveGameStatus {
 
     public void setChatId(Long chatId) {
         this.chatId = chatId;
-    }
-
-    public LocalDateTime getBeginDateTime() {
-        return beginDateTime;
-    }
-
-    public void setBeginDateTime(LocalDateTime beginDateTime) {
-        this.beginDateTime = beginDateTime;
-    }
-
-    public LocalDateTime getLastMoveDateTime() {
-        return lastMoveDateTime;
-    }
-
-    public void setLastMoveDateTime(LocalDateTime lastMoveDateTime) {
-        this.lastMoveDateTime = lastMoveDateTime;
     }
 }
