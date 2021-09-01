@@ -11,14 +11,14 @@ public class ActiveGame {
     private Long id;
 
     // [TODO] Add constraint for unique pair (xPlayer, oPlayer)
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Player xPlayer;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Player oPlayer;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    List<Round> rounds;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Round> rounds;
 
     private Long chatId;
 

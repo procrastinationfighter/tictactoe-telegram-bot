@@ -1,5 +1,7 @@
 package pl.adamboguszewski.tictactoe.server;
 
+import pl.adamboguszewski.tictactoe.api.GameResult;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -8,29 +10,29 @@ public class FinishedGame {
     @Id
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Player xPlayer;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Player oPlayer;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     List<Round> rounds;
 
     private Long chatId;
 
-    boolean didXWin;
+    GameResult result;
 
     public FinishedGame() {
     }
 
-    public FinishedGame(ActiveGame game, boolean didXWin) {
+    public FinishedGame(ActiveGame game, GameResult result) {
         this.id = game.getId();
         this.xPlayer = game.getxPlayer();
         this.oPlayer = game.getoPlayer();
         this.rounds = game.getRounds();
         this.chatId = game.getChatId();
-        this.didXWin = didXWin;
+        this.result = result;
     }
 
     public Long getId() {
@@ -73,11 +75,11 @@ public class FinishedGame {
         this.chatId = chatId;
     }
 
-    public boolean isDidXWin() {
-        return didXWin;
+    public GameResult getResult() {
+        return result;
     }
 
-    public void setDidXWin(boolean didXWin) {
-        this.didXWin = didXWin;
+    public void setResult(GameResult result) {
+        this.result = result;
     }
 }
