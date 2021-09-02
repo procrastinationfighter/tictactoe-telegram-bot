@@ -1,6 +1,6 @@
 package pl.adamboguszewski.tictactoe.server.application;
 
-import pl.adamboguszewski.tictactoe.api.game.GameResult;
+import pl.adamboguszewski.tictactoe.api.game.GameStatus;
 import pl.adamboguszewski.tictactoe.api.game.Tile;
 
 import javax.persistence.*;
@@ -24,12 +24,12 @@ public class FinishedGame {
     private Long chatId;
 
     @Enumerated(EnumType.STRING)
-    GameResult result;
+    GameStatus result;
 
     public FinishedGame() {
     }
 
-    public FinishedGame(ActiveGame game, GameResult result) {
+    public FinishedGame(ActiveGame game, GameStatus result) {
         this.id = game.getId();
         this.xPlayer = game.getxPlayer();
         this.oPlayer = game.getoPlayer();
@@ -70,11 +70,11 @@ public class FinishedGame {
         this.chatId = chatId;
     }
 
-    public GameResult getResult() {
+    public GameStatus getResult() {
         return result;
     }
 
-    public void setResult(GameResult result) {
+    public void setResult(GameStatus result) {
         this.result = result;
     }
 

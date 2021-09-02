@@ -25,6 +25,8 @@ public class ActiveGame {
 
     private Long chatId;
 
+    private boolean isXNext;
+
     // [TODO] Add start time?
 
     public ActiveGame() {
@@ -35,6 +37,7 @@ public class ActiveGame {
         this.oPlayer = oPlayer;
         this.boardState = boardState;
         this.chatId = chatId;
+        this.isXNext = true;
     }
 
     public Long getId() {
@@ -75,5 +78,13 @@ public class ActiveGame {
 
     public void setBoardState(List<Tile> boardState) {
         this.boardState = boardState;
+    }
+
+    public boolean isXNext() {
+        return isXNext;
+    }
+
+    public void setIsXNext(boolean XNext) {
+        isXNext = XNext;
     }
 }
