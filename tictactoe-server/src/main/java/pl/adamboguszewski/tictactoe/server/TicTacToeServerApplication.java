@@ -29,55 +29,67 @@ public class TicTacToeServerApplication {
             log.info("Create new players");
             var player = new Player(2137L, "Papaj");
             var player3 = new Player(1488L, "Akwarelista");
-            playerRepo.save(player);
             playerRepo.save(player3);
+            playerRepo.save(player);
 
             log.info("Create a new game");
             List<Tile> tiles = new ArrayList<>();
-            tiles.add(Tile.None);
-            List<Round> rounds = new ArrayList<>();
-            rounds.add(new Round(1L, 0, tiles));
-
-            log.info("Save the game");
-            gameRepo.save(new ActiveGame(21L, player, player3, rounds, 33L));
-            log.info("Find the game");
-            List<ActiveGame> games = gameRepo.findActiveGameByxPlayer(player);
-            if (!games.isEmpty()) {
-                log.info("Found game");
-                log.info("Id:" + games.get(0).getId()
-                        + ", XPlayer: " + games.get(0).getxPlayer().getName()
-                        + ", OPlayer: " + games.get(0).getoPlayer().getName());
-                log.info("XPlayer made a move and won! Changing game to finished...");
-                var game = games.get(0);
-
-                log.info("Add the new round");
-                rounds.add(new Round(2L, 1, new ArrayList<>(Collections.singleton(Tile.X))));
-                log.info("Change rounds");
-                game.setRounds(rounds);
-                log.info("Add to finished");
-                finRepo.save(new FinishedGame(game, GameResult.XWon));
-                log.info("Delete active");
-                gameRepo.delete(game);
-
-                log.info("Checking if migration was correct");
-
-                if (gameRepo.findActiveGameByxPlayer(player).isEmpty()) {
-                    log.info("Correctly deleted the active game");
-                } else {
-                    log.info("The active game was not deleted");
-                }
-
-                var finGame = finRepo.findActiveGameByxPlayer(player);
-                if (finGame.isEmpty()) {
-                    log.info("Finished game not added");
-                } else {
-                    var game2 = finGame.get(0);
-                    log.info("Correctly added the finished game: " + game.getId());
-                }
-            } else {
-                log.info("Game not found :(");
+            for (int i = 0; i < 9; i++) {
+                tiles.add(Tile.None);
             }
 
+            var game = gameRepo.save(new ActiveGame(player, player3, tiles, 21L));
+            log.info("Check if added");
+            var found = gameRepo.findByChatId(21L);
+            if (found.isEmpty()) {
+                log.info("Adding failed");
+            } else {
+                log.info("Adding successful");
+                log.info("Try adding another with one common player");
+
+                var player2 = new Player(42L, "Kubica");
+                var player4 = new Player(2137L, "Papajak");
+                playerRepo.save(player2);
+                playerRepo.save(player4);
+
+                var game2 = gameRepo.save(new ActiveGame(player2, player4, tiles, 21L));
+                log.info("Added");
+                found = gameRepo.findByChatId(21L);
+                if (found.size() != 2) {
+                    log.info("Wrong number of games");
+                } else {
+                    log.info("OK");
+                }
+
+
+//                found.get(0).getBoardState().set(4, Tile.X);
+//                gameRepo.save(found.get(0));
+//
+//                log.info("Added, now check if ok");
+//                found = gameRepo.findByChatId(21L);
+//                log.info("Board state: ");
+//                for (var tile : found.get(0).getBoardState()) {
+//                    log.info(tile.toString());
+//                }
+//
+//                log.info("Try finishing the game");
+//                finRepo.save(new FinishedGame(found.get(0), GameResult.Draw));
+//                log.info("Added finished game");
+//                var finFound = finRepo.findByChatId(21L);
+//                if (finFound.isEmpty()) {
+//                    log.info("Added failed");
+//                } else {
+//                    log.info("Added successful, now try to remove old game");
+//                    gameRepo.delete(found.get(0));
+//                    log.info("Deleted, check if success");
+//                    found = gameRepo.findByChatId(21L);
+//                    if (found.isEmpty()) {
+//                        log.info("success");
+//                    } else {
+//                        log.info("fail");
+//                    }
+//                }
+            }
 
         };
     }

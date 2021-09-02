@@ -1,5 +1,7 @@
 package pl.adamboguszewski.tictactoe.server;
 
+import pl.adamboguszewski.tictactoe.api.Tile;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -7,29 +9,31 @@ import java.util.List;
 public class ActiveGame {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     // [TODO] Add constraint for unique pair (xPlayer, oPlayer)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.EAGER)
     private Player xPlayer;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.EAGER)
     private Player oPlayer;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Round> rounds;
+    @ElementCollection(targetClass = Tile.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private List<Tile> boardState;
 
     private Long chatId;
+
+    // [TODO] Add start time?
 
     public ActiveGame() {
     }
 
-    public ActiveGame(Long id, Player xPlayer, Player oPlayer, List<Round> rounds, Long chatId) {
-        this.id = id;
+    public ActiveGame(Player xPlayer, Player oPlayer, List<Tile> boardState, Long chatId) {
         this.xPlayer = xPlayer;
         this.oPlayer = oPlayer;
-        this.rounds = rounds;
+        this.boardState = boardState;
         this.chatId = chatId;
     }
 
@@ -57,19 +61,19 @@ public class ActiveGame {
         this.oPlayer = oPlayer;
     }
 
-    public List<Round> getRounds() {
-        return rounds;
-    }
-
-    public void setRounds(List<Round> rounds) {
-        this.rounds = rounds;
-    }
-
     public Long getChatId() {
         return chatId;
     }
 
     public void setChatId(Long chatId) {
         this.chatId = chatId;
+    }
+
+    public List<Tile> getBoardState() {
+        return boardState;
+    }
+
+    public void setBoardState(List<Tile> boardState) {
+        this.boardState = boardState;
     }
 }

@@ -1,6 +1,7 @@
 package pl.adamboguszewski.tictactoe.server;
 
 import pl.adamboguszewski.tictactoe.api.GameResult;
+import pl.adamboguszewski.tictactoe.api.Tile;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,17 +11,19 @@ public class FinishedGame {
     @Id
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.EAGER)
     private Player xPlayer;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.EAGER)
     private Player oPlayer;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    List<Round> rounds;
+    @ElementCollection(targetClass = Tile.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private List<Tile> boardState;
 
     private Long chatId;
 
+    @Enumerated(EnumType.STRING)
     GameResult result;
 
     public FinishedGame() {
@@ -30,7 +33,7 @@ public class FinishedGame {
         this.id = game.getId();
         this.xPlayer = game.getxPlayer();
         this.oPlayer = game.getoPlayer();
-        this.rounds = game.getRounds();
+        this.boardState = game.getBoardState();
         this.chatId = game.getChatId();
         this.result = result;
     }
@@ -59,14 +62,6 @@ public class FinishedGame {
         this.oPlayer = oPlayer;
     }
 
-    public List<Round> getRounds() {
-        return rounds;
-    }
-
-    public void setRounds(List<Round> rounds) {
-        this.rounds = rounds;
-    }
-
     public Long getChatId() {
         return chatId;
     }
@@ -81,5 +76,13 @@ public class FinishedGame {
 
     public void setResult(GameResult result) {
         this.result = result;
+    }
+
+    public List<Tile> getBoardState() {
+        return boardState;
+    }
+
+    public void setBoardState(List<Tile> boardState) {
+        this.boardState = boardState;
     }
 }

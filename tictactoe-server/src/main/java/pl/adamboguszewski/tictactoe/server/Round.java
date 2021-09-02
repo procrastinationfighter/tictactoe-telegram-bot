@@ -10,7 +10,7 @@ import java.util.List;
 public class Round {
     // Technically, game id and round number could make a primary key.
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private Integer roundNumber;
