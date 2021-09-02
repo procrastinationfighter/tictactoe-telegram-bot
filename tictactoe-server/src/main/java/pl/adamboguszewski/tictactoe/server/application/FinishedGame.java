@@ -1,7 +1,7 @@
 package pl.adamboguszewski.tictactoe.server.application;
 
-import pl.adamboguszewski.tictactoe.api.GameResult;
-import pl.adamboguszewski.tictactoe.api.Tile;
+import pl.adamboguszewski.tictactoe.api.game.GameResult;
+import pl.adamboguszewski.tictactoe.api.game.Tile;
 
 import javax.persistence.*;
 import java.util.List;

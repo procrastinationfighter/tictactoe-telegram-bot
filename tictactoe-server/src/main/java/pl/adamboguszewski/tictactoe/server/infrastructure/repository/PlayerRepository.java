@@ -1,4 +1,4 @@
-package pl.adamboguszewski.tictactoe.server.repository;
+package pl.adamboguszewski.tictactoe.server.infrastructure.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import pl.adamboguszewski.tictactoe.server.application.Player;

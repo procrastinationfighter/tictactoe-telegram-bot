@@ -1,4 +1,4 @@
-package pl.adamboguszewski.tictactoe.api;
+package pl.adamboguszewski.tictactoe.api.game;
 
 public enum Tile {
     X("X"),

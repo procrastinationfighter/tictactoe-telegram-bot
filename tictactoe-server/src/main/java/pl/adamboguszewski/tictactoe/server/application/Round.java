@@ -1,6 +1,6 @@
 package pl.adamboguszewski.tictactoe.server.application;
 
-import pl.adamboguszewski.tictactoe.api.Tile;
+import pl.adamboguszewski.tictactoe.api.game.Tile;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
