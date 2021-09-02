@@ -1,18 +1,16 @@
-package pl.adamboguszewski.tictactoe.server;
+package pl.adamboguszewski.tictactoe.server.application;
 
+import pl.adamboguszewski.tictactoe.api.GameResult;
 import pl.adamboguszewski.tictactoe.api.Tile;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class ActiveGame {
-
+public class FinishedGame {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    // [TODO] Add constraint for unique pair (xPlayer, oPlayer)
     @ManyToOne(fetch = FetchType.EAGER)
     private Player xPlayer;
 
@@ -25,16 +23,19 @@ public class ActiveGame {
 
     private Long chatId;
 
-    // [TODO] Add start time?
+    @Enumerated(EnumType.STRING)
+    GameResult result;
 
-    public ActiveGame() {
+    public FinishedGame() {
     }
 
-    public ActiveGame(Player xPlayer, Player oPlayer, List<Tile> boardState, Long chatId) {
-        this.xPlayer = xPlayer;
-        this.oPlayer = oPlayer;
-        this.boardState = boardState;
-        this.chatId = chatId;
+    public FinishedGame(ActiveGame game, GameResult result) {
+        this.id = game.getId();
+        this.xPlayer = game.getxPlayer();
+        this.oPlayer = game.getoPlayer();
+        this.boardState = game.getBoardState();
+        this.chatId = game.getChatId();
+        this.result = result;
     }
 
     public Long getId() {
@@ -67,6 +68,14 @@ public class ActiveGame {
 
     public void setChatId(Long chatId) {
         this.chatId = chatId;
+    }
+
+    public GameResult getResult() {
+        return result;
+    }
+
+    public void setResult(GameResult result) {
+        this.result = result;
     }
 
     public List<Tile> getBoardState() {

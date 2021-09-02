@@ -1,6 +1,8 @@
-package pl.adamboguszewski.tictactoe.server;
+package pl.adamboguszewski.tictactoe.server.repository;
 
 import org.springframework.data.repository.CrudRepository;
+import pl.adamboguszewski.tictactoe.server.application.FinishedGame;
+import pl.adamboguszewski.tictactoe.server.application.Player;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package pl.adamboguszewski.tictactoe.server;
+package pl.adamboguszewski.tictactoe.server.application;
 
 import pl.adamboguszewski.tictactoe.api.Tile;
 

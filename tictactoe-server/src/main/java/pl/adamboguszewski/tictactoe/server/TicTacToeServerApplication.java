@@ -6,11 +6,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import pl.adamboguszewski.tictactoe.api.GameResult;
 import pl.adamboguszewski.tictactoe.api.Tile;
+import pl.adamboguszewski.tictactoe.server.application.ActiveGame;
+import pl.adamboguszewski.tictactoe.server.application.Player;
+import pl.adamboguszewski.tictactoe.server.repository.ActiveGameRepository;
+import pl.adamboguszewski.tictactoe.server.repository.FinishedGameRepository;
+import pl.adamboguszewski.tictactoe.server.repository.PlayerRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @SpringBootApplication
