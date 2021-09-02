@@ -1,11 +1,11 @@
 package pl.adamboguszewski.tictactoe.api.game;
 
-public class NewGamePlayer {
+public class PlayerRequest {
 
     private Long id;
     private String name;
 
-    public NewGamePlayer(Long id, String name) {
+    public PlayerRequest(Long id, String name) {
         this.id = id;
         this.name = name;
     }
