@@ -1,6 +1,6 @@
 package pl.adamboguszewski.tictactoe.api.game.response;
 
-public class CreateNewGameFailureResponse {
+public class CreateNewGameFailureResponse implements CreateNewGameResponse {
 
     private final String message;
     private final Long errorCode;

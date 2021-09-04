@@ -3,6 +3,7 @@ package pl.adamboguszewski.tictactoe.server.infrastructure.controller;
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,10 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pl.adamboguszewski.tictactoe.api.game.request.CreateNewGameRequest;
 import pl.adamboguszewski.tictactoe.api.game.request.MakeAMoveRequest;
-import pl.adamboguszewski.tictactoe.api.game.response.CreateNewGameResponse;
-import pl.adamboguszewski.tictactoe.api.game.response.CreateNewGameSuccessResponse;
-import pl.adamboguszewski.tictactoe.api.game.response.MakeAMoveResponse;
-import pl.adamboguszewski.tictactoe.api.game.response.MakeAMoveSuccessResponse;
+import pl.adamboguszewski.tictactoe.api.game.response.*;
 import pl.adamboguszewski.tictactoe.server.TicTacToeServerApplication;
 import pl.adamboguszewski.tictactoe.server.application.GameService;
 import pl.adamboguszewski.tictactoe.server.application.dto.MakeAMoveResponseDto;
@@ -38,7 +36,11 @@ public class GameController {
     public ResponseEntity<CreateNewGameResponse> createNewGame(@Valid @RequestBody CreateNewGameRequest request) {
         log.info("Creating new game (controller)");
         // todo
-        return ResponseEntity.ok(new CreateNewGameSuccessResponse(service.createNewGame(request)));
+        try {
+            return ResponseEntity.ok(new CreateNewGameSuccessResponse(service.createNewGame(request)));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CreateNewGameFailureResponse(e.getMessage(), 1L), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/{chat_id}")

@@ -87,4 +87,9 @@ public class ActiveGame {
     public void setIsXNext(boolean XNext) {
         isXNext = XNext;
     }
+
+    public boolean doesIncludePlayers(Player first, Player second) {
+        return first.getId().equals(xPlayer.getId()) && second.getId().equals(oPlayer.getId())
+                || first.getId().equals(oPlayer.getId()) && second.getId().equals(xPlayer.getId());
+    }
 }
