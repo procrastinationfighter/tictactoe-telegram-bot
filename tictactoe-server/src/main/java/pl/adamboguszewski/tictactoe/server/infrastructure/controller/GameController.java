@@ -5,10 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import pl.adamboguszewski.tictactoe.api.game.request.CreateNewGameRequest;
 import pl.adamboguszewski.tictactoe.api.game.request.MakeAMoveRequest;
@@ -43,11 +40,15 @@ public class GameController {
         }
     }
 
-    @PostMapping("/{chat_id}")
-    public ResponseEntity<MakeAMoveResponse> makeAMove(@Valid @RequestBody MakeAMoveRequest request) {
+    @PostMapping("/{chatId}")
+    public ResponseEntity<MakeAMoveResponse> makeAMove(@Valid @RequestBody MakeAMoveRequest request, @PathVariable Long chatId) {
         log.info("Got make a move request: " + new GsonBuilder().create().toJson(request));
         // todo
-        return ResponseEntity.ok(generateMakeAMoveResponseFromDto(service.makeAMove(request)));
+        try {
+            return ResponseEntity.ok(generateMakeAMoveResponseFromDto(service.makeAMove(request, chatId)));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MakeAMoveFailureResponse(e.getMessage(), 1L), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private MakeAMoveResponse generateMakeAMoveResponseFromDto(MakeAMoveResponseDto dto) {

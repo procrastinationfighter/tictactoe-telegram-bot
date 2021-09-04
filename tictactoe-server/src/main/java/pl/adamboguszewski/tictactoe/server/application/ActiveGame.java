@@ -1,5 +1,6 @@
 package pl.adamboguszewski.tictactoe.server.application;
 
+import pl.adamboguszewski.tictactoe.api.game.GameStatus;
 import pl.adamboguszewski.tictactoe.api.game.Tile;
 
 import javax.persistence.*;
@@ -91,5 +92,19 @@ public class ActiveGame {
     public boolean doesIncludePlayers(Player first, Player second) {
         return first.getId().equals(xPlayer.getId()) && second.getId().equals(oPlayer.getId())
                 || first.getId().equals(oPlayer.getId()) && second.getId().equals(xPlayer.getId());
+    }
+
+    public boolean isNextPlayerCorrect(Player player) {
+        if (isXNext) {
+            return player.getId().equals(xPlayer.getId());
+        } else {
+            return player.getId().equals(oPlayer.getId());
+        }
+    }
+
+    public GameStatus getNewStatus() {
+        // The game will be finished if one of the players won or all tiles are not empty.
+        // todo
+        return GameStatus.GameActive;
     }
 }

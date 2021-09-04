@@ -16,6 +16,7 @@ import pl.adamboguszewski.tictactoe.server.infrastructure.repository.PlayerRepos
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
@@ -45,24 +46,60 @@ public class GameService {
         Player oPlayer = Player.fromPlayerRequest(request.getoPlayer());
 
         // [fixme] CrudRepository didn't allow me to do it inside the database
-        List<ActiveGame> activeGames = activeGameRepository.findActiveGamesByChatId(request.getChatId());
-        for (var game : activeGames) {
-            if (game.doesIncludePlayers(xPlayer, oPlayer)) {
-                throw new RuntimeException("The game with these players already exists");
-            }
+        Optional<ActiveGame> otherGame = findActiveGame(request.getChatId(), xPlayer, oPlayer);
+        if (otherGame.isPresent()) {
+            throw new RuntimeException("The game with these players already exists");
         }
 
         playerRepository.save(xPlayer);
         playerRepository.save(oPlayer);
         ActiveGame game = new ActiveGame(xPlayer, oPlayer, getEmptyBoard(), request.getChatId());
         game = activeGameRepository.save(game);
+
+        log.info("Created a new game with id " + game.getId());
         return game.getId();
     }
 
-    public MakeAMoveResponseDto makeAMove(MakeAMoveRequest request) {
-        log.info("Got make a move request: " + new GsonBuilder().create().toJson(request));
+    public MakeAMoveResponseDto makeAMove(MakeAMoveRequest request, Long chatId) {
+        log.info("Got make a move request for chat " + chatId + ": " + new GsonBuilder().create().toJson(request));
 
-        return new MakeAMoveResponseDto(new ArrayList<>(), GameStatus.GameActive, true);
+        // todo reformat
+        Player whoPlayed = Player.fromPlayerRequest(request.getWhoPlayed());
+        Player otherPlayer = Player.fromPlayerRequest(request.getOtherPlayer());
+
+        Optional<ActiveGame> gameOptional = findActiveGame(request.getChatId(), whoPlayed, otherPlayer);
+        if (gameOptional.isEmpty()) {
+            throw new RuntimeException("The game with these players does not exist on this chat.");
+        } else if (request.getTileNumber() < 0 || request.getTileNumber() >= BOARD_SIZE) {
+            throw new RuntimeException("Invalid tile number. Choose between 0 and " + (BOARD_SIZE - 1));
+        }
+
+        ActiveGame game = gameOptional.get();
+
+        if (game.isNextPlayerCorrect(whoPlayed)) {
+            throw new RuntimeException("It's the other player's turn now.");
+        } else if (!game.getBoardState().get(request.getTileNumber()).equals(Tile.None)) {
+            throw new RuntimeException("The picked tile is not empty.");
+        }
+
+        if (game.isXNext()) {
+            game.getBoardState().set(request.getTileNumber(), Tile.X);
+        } else {
+            game.getBoardState().set(request.getTileNumber(), Tile.O);
+        }
+        // Change the next player.
+        game.setIsXNext(!game.isXNext());
+
+        GameStatus newStatus = game.getNewStatus();
+
+        if (newStatus.equals(GameStatus.GameActive)) {
+            activeGameRepository.save(game);
+            return new MakeAMoveResponseDto(game.getBoardState(), newStatus, game.isXNext());
+        } else {
+            activeGameRepository.delete(game);
+            finishedGameRepository.save(new FinishedGame(game, newStatus));
+            return new MakeAMoveResponseDto(game.getBoardState(), newStatus, false);
+        }
     }
 
     private List<Tile> getEmptyBoard() {
@@ -71,5 +108,16 @@ public class GameService {
             board.add(Tile.None);
         }
         return board;
+    }
+
+    private Optional<ActiveGame> findActiveGame(Long chatId, Player first, Player second) {
+        List<ActiveGame> activeGames = activeGameRepository.findActiveGamesByChatId(chatId);
+        for (var game : activeGames) {
+            if (game.doesIncludePlayers(first, second)) {
+                return Optional.of(game);
+            }
+        }
+
+        return Optional.empty();
     }
 }
