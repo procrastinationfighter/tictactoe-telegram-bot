@@ -9,6 +9,12 @@ import java.util.List;
 @Entity
 public class ActiveGame {
 
+    private static final int[][] WINNING_POSITIONS = {
+            {0, 1, 2}, {0, 3, 6}, {0, 4, 8}, {1, 4, 7}, {2, 5, 8}, {2, 4, 6}, {3, 4, 5}, {6, 7, 8}
+    };
+
+    private static int BOARD_SIZE = 9;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -104,7 +110,32 @@ public class ActiveGame {
 
     public GameStatus getNewStatus() {
         // The game will be finished if one of the players won or all tiles are not empty.
-        // todo
-        return GameStatus.GameActive;
+        // Check all possible positions (it's not very effective, but there are only 8 possible winning lines for 3x3)
+        for (var position : WINNING_POSITIONS) {
+            var state = boardState.get(position[0]);
+            if (state.equals(boardState.get(position[1])) && state.equals(boardState.get(position[2]))) {
+                if (state.equals(Tile.X)) {
+                    return GameStatus.XWon;
+                } else if (state.equals(Tile.O)) {
+                    return GameStatus.OWon;
+                }
+                // Else all tiles in a line are empty. Continue.
+            }
+        }
+        // No one has won. The status is either draw or active.
+
+        // Check if not draw.
+        int i;
+        for (i = 0; i < BOARD_SIZE; i++) {
+            if (boardState.get(i).equals(Tile.None)) {
+                break;
+            }
+        }
+
+        if (i == BOARD_SIZE) {
+            return GameStatus.Draw;
+        } else {
+            return GameStatus.GameActive;
+        }
     }
 }

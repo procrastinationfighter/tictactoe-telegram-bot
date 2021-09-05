@@ -27,8 +27,4 @@ public class MakeAMoveSuccessResponse implements MakeAMoveResponse {
     public boolean isXNext() {
         return isXNext;
     }
-
-    public boolean isGameActive() {
-        return status.equals(GameStatus.GameActive);
-    }
 }
