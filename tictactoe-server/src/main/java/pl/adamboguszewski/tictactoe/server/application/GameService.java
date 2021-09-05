@@ -39,7 +39,7 @@ public class GameService {
     }
 
     public Long createNewGame(CreateNewGameRequest request) {
-        log.info("Got create new game request: " + new GsonBuilder().create().toJson(request));
+        log.debug("Got create new game request: " + new GsonBuilder().create().toJson(request));
 
         Player xPlayer = Player.fromPlayerRequest(request.getxPlayer());
         Player oPlayer = Player.fromPlayerRequest(request.getoPlayer());
@@ -61,7 +61,7 @@ public class GameService {
     }
 
     public MakeAMoveResponseDto makeAMove(MakeAMoveRequest request, Long chatId) {
-        log.info("Got make a move request for chat " + chatId + ": " + new GsonBuilder().create().toJson(request));
+        log.debug("Got make a move request for chat " + chatId + ": " + new GsonBuilder().create().toJson(request));
 
         ActiveGame game = getGameAndValidateMakeAMoveParameters(request, chatId);
 
@@ -77,10 +77,12 @@ public class GameService {
 
         if (newStatus.equals(GameStatus.GameActive)) {
             activeGameRepository.save(game);
+            log.info("Made a move in the game no. " + game.getId());
             return new MakeAMoveResponseDto(game.getBoardState(), newStatus, game.isXNext());
         } else {
             activeGameRepository.delete(game);
             finishedGameRepository.save(new FinishedGame(game, newStatus));
+            log.info("Game no. " + game.getId() + " finished. Result: " + newStatus);
             return new MakeAMoveResponseDto(game.getBoardState(), newStatus, false);
         }
     }
@@ -137,7 +139,9 @@ public class GameService {
     }
 
     public GetCurrentGameResponseDto getCurrentGame(GetCurrentGameRequest request, Long chatId) {
+        log.debug("Got get current game request for chat " + chatId + ": " + new GsonBuilder().create().toJson(request));
         ActiveGame game = getActiveGameOrThrowException(chatId, request.getFirstPlayerId(), request.getSecondPlayerId());
+        log.info("Sending state of the game no. " + game.getId());
         return new GetCurrentGameResponseDto(game.getxPlayer().getId(), game.getoPlayer().getId(), game.isXNext(), game.getBoardState());
     }
 }

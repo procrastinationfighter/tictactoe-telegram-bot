@@ -23,8 +23,6 @@ import javax.validation.Valid;
 @RequestMapping("/tictactoe/api")
 public class GameController {
 
-    private static final Logger log = LoggerFactory.getLogger(TicTacToeServerApplication.class);
-
     private final GameService service;
 
     public GameController(GameService service) {
@@ -33,7 +31,6 @@ public class GameController {
 
     @PostMapping("")
     public ResponseEntity<CreateNewGameResponse> createNewGame(@Valid @RequestBody CreateNewGameRequest request) {
-        log.info("Creating new game (controller)");
         // todo
         try {
             return ResponseEntity.ok(new CreateNewGameSuccessResponse(service.createNewGame(request)));
@@ -44,7 +41,6 @@ public class GameController {
 
     @PostMapping("/{chatId}")
     public ResponseEntity<MakeAMoveResponse> makeAMove(@Valid @RequestBody MakeAMoveRequest request, @PathVariable Long chatId) {
-        log.info("Got make a move request: " + new GsonBuilder().create().toJson(request));
         // todo
         try {
             return ResponseEntity.ok(generateMakeAMoveResponseFromDto(service.makeAMove(request, chatId)));
