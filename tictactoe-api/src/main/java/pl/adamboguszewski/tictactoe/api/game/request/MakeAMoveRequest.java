@@ -7,24 +7,24 @@ import javax.validation.constraints.NotNull;
 public class MakeAMoveRequest {
 
     @NotNull
-    private final PlayerRequest whoPlayed;
+    private final Long whoPlayed;
     @NotNull
-    private final PlayerRequest otherPlayer;
+    private final Long otherPlayer;
 
     @NotNull
     private final Integer tileNumber;
 
-    public MakeAMoveRequest(PlayerRequest whoPlayed, PlayerRequest otherPlayer, Integer tileNumber) {
+    public MakeAMoveRequest(Long whoPlayed, Long otherPlayer, Integer tileNumber) {
         this.whoPlayed = whoPlayed;
         this.otherPlayer = otherPlayer;
         this.tileNumber = tileNumber;
     }
 
-    public PlayerRequest getWhoPlayed() {
+    public Long getWhoPlayed() {
         return whoPlayed;
     }
 
-    public PlayerRequest getOtherPlayer() {
+    public Long getOtherPlayer() {
         return otherPlayer;
     }
 

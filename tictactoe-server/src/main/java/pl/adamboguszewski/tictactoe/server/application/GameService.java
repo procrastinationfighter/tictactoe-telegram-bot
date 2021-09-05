@@ -104,10 +104,16 @@ public class GameService {
     }
 
     private ActiveGame getGameAndValidateMakeAMoveParameters(MakeAMoveRequest request, Long chatId) {
-        Player whoPlayed = Player.fromPlayerRequest(request.getWhoPlayed());
-        Player otherPlayer = Player.fromPlayerRequest(request.getOtherPlayer());
+        Optional<Player> whoPlayed = playerRepository.findById(request.getWhoPlayed());
+        Optional<Player> otherPlayer = playerRepository.findById(request.getOtherPlayer());
 
-        Optional<ActiveGame> gameOptional = findActiveGame(chatId, whoPlayed, otherPlayer);
+        if (whoPlayed.isEmpty()) {
+            throw new RuntimeException("Player with id " + request.getWhoPlayed() + " not found.");
+        } else if (otherPlayer.isEmpty()) {
+            throw new RuntimeException("Player with id " + request.getOtherPlayer() + " not found.");
+        }
+
+        Optional<ActiveGame> gameOptional = findActiveGame(chatId, whoPlayed.get(), otherPlayer.get());
         if (gameOptional.isEmpty()) {
             throw new RuntimeException("The game with these players does not exist on this chat.");
         } else if (request.getTileNumber() < 0 || request.getTileNumber() >= BOARD_SIZE) {
@@ -116,7 +122,7 @@ public class GameService {
 
         ActiveGame game = gameOptional.get();
 
-        if (!game.isNextPlayerCorrect(whoPlayed)) {
+        if (!game.isNextPlayerCorrect(whoPlayed.get())) {
             throw new RuntimeException("It's the other player's turn now.");
         } else if (!game.getBoardState().get(request.getTileNumber()).equals(Tile.None)) {
             throw new RuntimeException("The picked tile is not empty.");
