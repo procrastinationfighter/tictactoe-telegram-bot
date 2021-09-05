@@ -1,8 +1,5 @@
 package pl.adamboguszewski.tictactoe.server.infrastructure.controller;
 
-import com.google.gson.GsonBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +8,6 @@ import pl.adamboguszewski.tictactoe.api.game.request.CreateNewGameRequest;
 import pl.adamboguszewski.tictactoe.api.game.request.GetCurrentGameRequest;
 import pl.adamboguszewski.tictactoe.api.game.request.MakeAMoveRequest;
 import pl.adamboguszewski.tictactoe.api.game.response.*;
-import pl.adamboguszewski.tictactoe.server.TicTacToeServerApplication;
 import pl.adamboguszewski.tictactoe.server.application.GameService;
 import pl.adamboguszewski.tictactoe.server.application.dto.GetCurrentGameResponseDto;
 import pl.adamboguszewski.tictactoe.server.application.dto.MakeAMoveResponseDto;
@@ -31,7 +27,6 @@ public class GameController {
 
     @PostMapping("")
     public ResponseEntity<CreateNewGameResponse> createNewGame(@Valid @RequestBody CreateNewGameRequest request) {
-        // todo
         try {
             return ResponseEntity.ok(new CreateNewGameSuccessResponse(service.createNewGame(request)));
         } catch (Exception e) {
@@ -41,7 +36,6 @@ public class GameController {
 
     @PostMapping("/{chatId}")
     public ResponseEntity<MakeAMoveResponse> makeAMove(@Valid @RequestBody MakeAMoveRequest request, @PathVariable Long chatId) {
-        // todo
         try {
             return ResponseEntity.ok(generateMakeAMoveResponseFromDto(service.makeAMove(request, chatId)));
         } catch (Exception e) {
@@ -55,7 +49,6 @@ public class GameController {
 
     @GetMapping("/{chatId}")
     public ResponseEntity<GetCurrentGameResponse> getCurrentGame(@Valid @RequestBody GetCurrentGameRequest request, @PathVariable Long chatId) {
-        // todo
         try {
             return ResponseEntity.ok(generateGetCurrentGameResponseFromDto(service.getCurrentGame(request, chatId)));
         } catch (Exception e) {

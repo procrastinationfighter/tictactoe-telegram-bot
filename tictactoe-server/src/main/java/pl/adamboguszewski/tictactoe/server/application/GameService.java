@@ -44,7 +44,7 @@ public class GameService {
         Player xPlayer = Player.fromPlayerRequest(request.getxPlayer());
         Player oPlayer = Player.fromPlayerRequest(request.getoPlayer());
 
-        // [fixme] CrudRepository didn't allow me to do it inside the database
+        // [fixme] CrudRepository didn't allow me to do it inside the database.
         Optional<ActiveGame> otherGame = findActiveGame(request.getChatId(), xPlayer, oPlayer);
         if (otherGame.isPresent()) {
             throw new RuntimeException("The game with these players already exists");
