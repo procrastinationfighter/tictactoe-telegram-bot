@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import pl.adamboguszewski.tictactoe.api.game.GameStatus;
 import pl.adamboguszewski.tictactoe.api.game.Tile;
 import pl.adamboguszewski.tictactoe.api.game.request.CreateNewGameRequest;
+import pl.adamboguszewski.tictactoe.api.game.request.GetCurrentGameRequest;
 import pl.adamboguszewski.tictactoe.api.game.request.MakeAMoveRequest;
 import pl.adamboguszewski.tictactoe.server.TicTacToeServerApplication;
+import pl.adamboguszewski.tictactoe.server.application.dto.GetCurrentGameResponseDto;
 import pl.adamboguszewski.tictactoe.server.application.dto.MakeAMoveResponseDto;
 import pl.adamboguszewski.tictactoe.server.infrastructure.repository.*;
 
@@ -52,7 +54,6 @@ public class GameService {
         playerRepository.save(oPlayer);
         ActiveGame game = new ActiveGame(xPlayer, oPlayer, getEmptyBoard(), request.getChatId());
         game = activeGameRepository.save(game);
-
 
 
         log.info("Created a new game with id " + game.getId());
@@ -103,31 +104,40 @@ public class GameService {
         return Optional.empty();
     }
 
-    private ActiveGame getGameAndValidateMakeAMoveParameters(MakeAMoveRequest request, Long chatId) {
-        Optional<Player> whoPlayed = playerRepository.findById(request.getWhoPlayed());
-        Optional<Player> otherPlayer = playerRepository.findById(request.getOtherPlayer());
+    private ActiveGame getActiveGameOrThrowException(Long chatId, Long firstPlayerId, Long secondPlayerId) {
+        Optional<Player> firstPlayer = playerRepository.findById(firstPlayerId);
+        Optional<Player> secondPlayer = playerRepository.findById(secondPlayerId);
 
-        if (whoPlayed.isEmpty()) {
-            throw new RuntimeException("Player with id " + request.getWhoPlayed() + " not found.");
-        } else if (otherPlayer.isEmpty()) {
-            throw new RuntimeException("Player with id " + request.getOtherPlayer() + " not found.");
+        if (firstPlayer.isEmpty()) {
+            throw new RuntimeException("Player with id " + firstPlayerId + " not found.");
+        } else if (secondPlayer.isEmpty()) {
+            throw new RuntimeException("Player with id " + secondPlayerId + " not found.");
         }
 
-        Optional<ActiveGame> gameOptional = findActiveGame(chatId, whoPlayed.get(), otherPlayer.get());
+        Optional<ActiveGame> gameOptional = findActiveGame(chatId, firstPlayer.get(), secondPlayer.get());
         if (gameOptional.isEmpty()) {
             throw new RuntimeException("The game with these players does not exist on this chat.");
-        } else if (request.getTileNumber() < 0 || request.getTileNumber() >= BOARD_SIZE) {
-            throw new RuntimeException("Invalid tile number. Choose between 0 and " + (BOARD_SIZE - 1));
+        } else {
+            return gameOptional.get();
         }
+    }
 
-        ActiveGame game = gameOptional.get();
+    private ActiveGame getGameAndValidateMakeAMoveParameters(MakeAMoveRequest request, Long chatId) {
+        ActiveGame game = getActiveGameOrThrowException(chatId, request.getWhoPlayed(), request.getOtherPlayer());
 
-        if (!game.isNextPlayerCorrect(whoPlayed.get())) {
+        if (request.getTileNumber() < 0 || request.getTileNumber() >= BOARD_SIZE) {
+            throw new RuntimeException("Invalid tile number. Choose between 0 and " + (BOARD_SIZE - 1));
+        } else if (!game.isNextPlayerIdCorrect(request.getWhoPlayed())) {
             throw new RuntimeException("It's the other player's turn now.");
         } else if (!game.getBoardState().get(request.getTileNumber()).equals(Tile.None)) {
             throw new RuntimeException("The picked tile is not empty.");
         }
 
         return game;
+    }
+
+    public GetCurrentGameResponseDto getCurrentGame(GetCurrentGameRequest request, Long chatId) {
+        ActiveGame game = getActiveGameOrThrowException(chatId, request.getFirstPlayerId(), request.getSecondPlayerId());
+        return new GetCurrentGameResponseDto(game.getxPlayer().getId(), game.getoPlayer().getId(), game.isXNext(), game.getBoardState());
     }
 }

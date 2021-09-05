@@ -8,10 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import pl.adamboguszewski.tictactoe.api.game.request.CreateNewGameRequest;
+import pl.adamboguszewski.tictactoe.api.game.request.GetCurrentGameRequest;
 import pl.adamboguszewski.tictactoe.api.game.request.MakeAMoveRequest;
 import pl.adamboguszewski.tictactoe.api.game.response.*;
 import pl.adamboguszewski.tictactoe.server.TicTacToeServerApplication;
 import pl.adamboguszewski.tictactoe.server.application.GameService;
+import pl.adamboguszewski.tictactoe.server.application.dto.GetCurrentGameResponseDto;
 import pl.adamboguszewski.tictactoe.server.application.dto.MakeAMoveResponseDto;
 
 import javax.validation.Valid;
@@ -53,5 +55,19 @@ public class GameController {
 
     private MakeAMoveResponse generateMakeAMoveResponseFromDto(MakeAMoveResponseDto dto) {
         return new MakeAMoveSuccessResponse(dto.getBoardState(), dto.getStatus(), dto.isXNext());
+    }
+
+    @GetMapping("/{chatId}")
+    public ResponseEntity<GetCurrentGameResponse> getCurrentGame(@Valid @RequestBody GetCurrentGameRequest request, @PathVariable Long chatId) {
+        // todo
+        try {
+            return ResponseEntity.ok(generateGetCurrentGameResponseFromDto(service.getCurrentGame(request, chatId)));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new GetCurrentGameFailureResponse(e.getMessage(), 1L), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private GetCurrentGameResponse generateGetCurrentGameResponseFromDto(GetCurrentGameResponseDto dto) {
+        return new GetCurrentGameSuccessResponse(dto.getxPlayerId(), dto.getoPlayerId(), dto.isXNext(), dto.getBoardState());
     }
 }

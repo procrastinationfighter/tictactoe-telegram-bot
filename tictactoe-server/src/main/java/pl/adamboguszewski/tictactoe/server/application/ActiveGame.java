@@ -100,11 +100,11 @@ public class ActiveGame {
                 || first.getId().equals(oPlayer.getId()) && second.getId().equals(xPlayer.getId());
     }
 
-    public boolean isNextPlayerCorrect(Player player) {
+    public boolean isNextPlayerIdCorrect(Long playerId) {
         if (isXNext) {
-            return player.getId().equals(xPlayer.getId());
+            return playerId.equals(xPlayer.getId());
         } else {
-            return player.getId().equals(oPlayer.getId());
+            return playerId.equals(oPlayer.getId());
         }
     }
 
