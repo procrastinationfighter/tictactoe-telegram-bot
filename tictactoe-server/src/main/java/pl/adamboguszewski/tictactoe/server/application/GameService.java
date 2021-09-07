@@ -41,8 +41,8 @@ public class GameService {
     public Long createNewGame(CreateNewGameRequest request) {
         log.debug("Got create new game request: " + new GsonBuilder().create().toJson(request));
 
-        Player xPlayer = Player.fromPlayerRequest(request.getxPlayer());
-        Player oPlayer = Player.fromPlayerRequest(request.getoPlayer());
+        Player xPlayer = Player.fromPlayerRequest(request.getXPlayer());
+        Player oPlayer = Player.fromPlayerRequest(request.getOPlayer());
 
         // [fixme] CrudRepository didn't allow me to do it inside the database.
         Optional<ActiveGame> otherGame = findActiveGame(request.getChatId(), xPlayer, oPlayer);

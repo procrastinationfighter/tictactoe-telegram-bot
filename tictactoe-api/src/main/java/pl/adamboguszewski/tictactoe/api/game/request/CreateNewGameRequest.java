@@ -1,12 +1,17 @@
 package pl.adamboguszewski.tictactoe.api.game.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import pl.adamboguszewski.tictactoe.api.game.PlayerRequest;
 
 import javax.validation.constraints.NotNull;
 
 public class CreateNewGameRequest {
+
+    @JsonProperty("xPlayer")
     @NotNull
     private final PlayerRequest xPlayer;
+
+    @JsonProperty("oPlayer")
     @NotNull
     private final PlayerRequest oPlayer;
 
@@ -19,11 +24,11 @@ public class CreateNewGameRequest {
         this.chatId = chatId;
     }
 
-    public PlayerRequest getxPlayer() {
+    public PlayerRequest getXPlayer() {
         return xPlayer;
     }
 
-    public PlayerRequest getoPlayer() {
+    public PlayerRequest getOPlayer() {
         return oPlayer;
     }
 
