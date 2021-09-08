@@ -1,20 +1,26 @@
 version: '3.4'
 services:
   tictactoe-server:
-    build: tictactoe-server
+    build:
+      context: .
+      dockerfile: ServerDockerfile
     ports:
       - "8080:8080"
     depends_on:
       - postgres
 
   tictactoe-bot:
-      build: tictactoe-bot
+      build:
+        context: .
+        dockerfile: BotDockerfile
       depends_on:
         - tictactoe-server
 
   postgres:
     image: "postgres:latest"
     environment:
-      - POSTGRES_DB="tictactoe"
-      - POSTGRES_USER="postgres"
-      - POSTGRES_PASSWORD="postgres"
+      - POSTGRES_DB=tictactoe
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - "5433:5433"

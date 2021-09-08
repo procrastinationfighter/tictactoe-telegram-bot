@@ -1,5 +1,5 @@
 FROM maven:3.8.2-openjdk-16
-COPY .. /tictactoe
+COPY . /tictactoe
 WORKDIR /tictactoe
 RUN mvn clean package
 CMD ["java","-jar","tictactoe-bot/target/tictactoe-bot-1.0-SNAPSHOT.jar"]
