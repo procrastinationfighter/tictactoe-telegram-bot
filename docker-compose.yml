@@ -4,10 +4,14 @@ services:
     build:
       context: .
       dockerfile: ServerDockerfile
+    environment:
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/tictactoe
+        - SPRING_DATASOURCE_USERNAME=tictac
+        - SPRING_DATASOURCE_PASSWORD=tictac
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      - db
 
   tictactoe-bot:
       build:
@@ -16,11 +20,11 @@ services:
       depends_on:
         - tictactoe-server
 
-  postgres:
+  db:
     image: "postgres:latest"
     environment:
       - POSTGRES_DB=tictactoe
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=tictac
+      - POSTGRES_PASSWORD=tictac
     ports:
-      - "5433:5433"
+      - "5432:5432"
