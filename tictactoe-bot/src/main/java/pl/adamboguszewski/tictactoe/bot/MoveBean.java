@@ -62,10 +62,33 @@ public class MoveBean {
     }
 
     private String getBoardStateString(List<Tile> boardState) {
-        // todo do it better
+        int BOARD_SIDE = 3;
+        char VERTICAL_LINE = '│', HORIZONTAL_LINE = '─', INTERSECTION = '┼';
         StringBuilder builder = new StringBuilder();
-        for (var tile : boardState) {
-            builder.append(tile.toString()).append(" ");
+
+        for (int i = 0; i < BOARD_SIDE; i++) {
+            for (int j = 0; j < BOARD_SIDE; j++) {
+                var tile = boardState.get(i * BOARD_SIDE + j);
+                switch (tile) {
+                    case X -> builder.append("X ");
+                    case O -> builder.append("O ");
+                    case None -> builder.append("    ");
+                }
+
+                if (j != BOARD_SIDE - 1) {
+                    builder.append(VERTICAL_LINE);
+                }
+            }
+            if (i != BOARD_SIDE - 1) {
+                builder.append('\n');
+                for (int j = 0; j < BOARD_SIDE; j++) {
+                    builder.append(HORIZONTAL_LINE);
+                    if (j != BOARD_SIDE - 1) {
+                        builder.append(INTERSECTION);
+                    }
+                }
+            }
+            builder.append('\n');
         }
 
         return builder.toString();
