@@ -28,9 +28,10 @@ public class GameController {
     @PostMapping("")
     public ResponseEntity<CreateNewGameResponse> createNewGame(@Valid @RequestBody CreateNewGameRequest request) {
         try {
-            return ResponseEntity.ok(new CreateNewGameSuccessResponse(service.createNewGame(request)));
+            return ResponseEntity.ok(new CreateNewGameSuccessResponse(request.getChatId(), service.createNewGame(request)));
         } catch (Exception e) {
-            return new ResponseEntity<>(new CreateNewGameFailureResponse(e.getMessage(), 1L), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new CreateNewGameFailureResponse(request.getChatId(), e.getMessage(), 1L),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -39,7 +40,8 @@ public class GameController {
         try {
             return ResponseEntity.ok(generateMakeAMoveResponseFromDto(service.makeAMove(request, chatId)));
         } catch (Exception e) {
-            return new ResponseEntity<>(new MakeAMoveFailureResponse(e.getMessage(), 1L), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new MakeAMoveFailureResponse(e.getMessage(), 1L),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -52,7 +54,8 @@ public class GameController {
         try {
             return ResponseEntity.ok(generateGetCurrentGameResponseFromDto(service.getCurrentGame(request, chatId)));
         } catch (Exception e) {
-            return new ResponseEntity<>(new GetCurrentGameFailureResponse(e.getMessage(), 1L), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new GetCurrentGameFailureResponse(e.getMessage(), 1L),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

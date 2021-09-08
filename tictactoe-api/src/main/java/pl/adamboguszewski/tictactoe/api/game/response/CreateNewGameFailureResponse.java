@@ -1,13 +1,17 @@
 package pl.adamboguszewski.tictactoe.api.game.response;
 
-public class CreateNewGameFailureResponse implements CreateNewGameResponse {
+public class CreateNewGameFailureResponse extends TicTacToeResponse implements CreateNewGameResponse {
 
-    private final String message;
-    private final Long errorCode;
+    private String message;
+    private Long errorCode;
 
-    public CreateNewGameFailureResponse(String message, Long errorCode) {
+    public CreateNewGameFailureResponse(Long chatId, String message, Long errorCode) {
+        super(chatId);
         this.message = message;
         this.errorCode = errorCode;
+    }
+
+    public CreateNewGameFailureResponse() {
     }
 
     public String getMessage() {
@@ -16,5 +20,13 @@ public class CreateNewGameFailureResponse implements CreateNewGameResponse {
 
     public Long getErrorCode() {
         return errorCode;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setErrorCode(Long errorCode) {
+        this.errorCode = errorCode;
     }
 }

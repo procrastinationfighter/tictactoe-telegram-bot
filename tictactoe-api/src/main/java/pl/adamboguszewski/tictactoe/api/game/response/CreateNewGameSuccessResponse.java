@@ -1,14 +1,22 @@
 package pl.adamboguszewski.tictactoe.api.game.response;
 
-public class CreateNewGameSuccessResponse implements CreateNewGameResponse {
+public class CreateNewGameSuccessResponse extends TicTacToeResponse implements CreateNewGameResponse {
 
-    private final Long id;
+    private Long gameId;
 
-    public CreateNewGameSuccessResponse(Long id) {
-        this.id = id;
+    public CreateNewGameSuccessResponse(Long chatId, Long gameId) {
+        super(chatId);
+        this.gameId = gameId;
     }
 
-    public Long getId() {
-        return id;
+    public CreateNewGameSuccessResponse() {
+    }
+
+    public Long getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
     }
 }
