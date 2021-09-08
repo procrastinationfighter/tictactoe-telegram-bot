@@ -4,6 +4,7 @@ import org.apache.camel.component.telegram.model.IncomingMessage;
 import org.apache.camel.component.telegram.model.OutgoingMessage;
 import org.apache.camel.component.telegram.model.OutgoingTextMessage;
 import org.springframework.stereotype.Component;
+import pl.adamboguszewski.tictactoe.api.game.PlayerApiEntity;
 import pl.adamboguszewski.tictactoe.api.game.Tile;
 import pl.adamboguszewski.tictactoe.api.game.request.MakeAMoveRequest;
 import pl.adamboguszewski.tictactoe.api.game.response.MakeAMoveFailureResponse;
@@ -55,8 +56,12 @@ public class MoveBean {
         builder.append("Board state after the move:\n");
         builder.append(getBoardStateString(response.getBoardState()));
 
+        builder.append(addPlayerText(response));
+
         out.setText(builder.toString());
         out.setChatId(response.getChatId().toString());
+
+        out.setParseMode("Markdown");
 
         return out;
     }
@@ -92,6 +97,41 @@ public class MoveBean {
         }
 
         return builder.toString();
+    }
+
+    private String addPlayerText(MakeAMoveSuccessResponse response) {
+        PlayerApiEntity player;
+        StringBuilder builder = new StringBuilder();
+
+        switch (response.getStatus()) {
+            case GameActive -> {
+                if (response.isXNext()) {
+                    player = response.getXPlayer();
+                } else {
+                    player = response.getOPlayer();
+                }
+                builder.append("Turn of: ");
+            }
+            case XWon -> {
+                player = response.getXPlayer();
+                builder.append("Congratulations to the X player: ");
+            }
+            case OWon -> {
+                player = response.getOPlayer();
+                builder.append("Congratulations to the O player: ");
+            }
+            case Draw -> {
+                return "";
+            }
+            default -> throw new IllegalStateException("Unexpected game status");
+        }
+        builder.append(getUserMentionString(player));
+
+        return builder.toString();
+    }
+
+    private String getUserMentionString(PlayerApiEntity player) {
+        return "[" + player.getName() + "](tg://user?id=" + player.getId() + ")";
     }
 
     public OutgoingMessage process(MakeAMoveFailureResponse response) {
