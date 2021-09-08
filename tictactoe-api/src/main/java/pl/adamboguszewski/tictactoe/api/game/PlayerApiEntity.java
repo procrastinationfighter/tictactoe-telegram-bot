@@ -1,13 +1,16 @@
 package pl.adamboguszewski.tictactoe.api.game;
 
-public class PlayerRequest {
+public class PlayerApiEntity {
 
     private Long id;
     private String name;
 
-    public PlayerRequest(Long id, String name) {
+    public PlayerApiEntity(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public PlayerApiEntity() {
     }
 
     public Long getId() {

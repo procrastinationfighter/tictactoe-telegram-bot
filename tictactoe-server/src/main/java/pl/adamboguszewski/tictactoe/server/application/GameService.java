@@ -78,12 +78,22 @@ public class GameService {
         if (newStatus.equals(GameStatus.GameActive)) {
             activeGameRepository.save(game);
             log.info("Made a move in the game no. " + game.getId());
-            return new MakeAMoveResponseDto(request.getChatId(), game.getBoardState(), newStatus, game.isXNext());
+            return new MakeAMoveResponseDto(request.getChatId(),
+                    game.getBoardState(),
+                    newStatus,
+                    game.getxPlayer(),
+                    game.getoPlayer(),
+                    game.isXNext());
         } else {
             activeGameRepository.delete(game);
             finishedGameRepository.save(new FinishedGame(game, newStatus));
             log.info("Game no. " + game.getId() + " finished. Result: " + newStatus);
-            return new MakeAMoveResponseDto(request.getChatId(), game.getBoardState(), newStatus, false);
+            return new MakeAMoveResponseDto(request.getChatId(),
+                    game.getBoardState(),
+                    newStatus,
+                    game.getxPlayer(),
+                    game.getoPlayer(),
+                    false);
         }
     }
 

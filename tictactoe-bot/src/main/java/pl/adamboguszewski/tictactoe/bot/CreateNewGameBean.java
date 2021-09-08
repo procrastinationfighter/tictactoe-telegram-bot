@@ -5,7 +5,7 @@ import org.apache.camel.component.telegram.model.OutgoingMessage;
 import org.apache.camel.component.telegram.model.OutgoingTextMessage;
 import org.apache.camel.component.telegram.model.User;
 import org.springframework.stereotype.Component;
-import pl.adamboguszewski.tictactoe.api.game.PlayerRequest;
+import pl.adamboguszewski.tictactoe.api.game.PlayerApiEntity;
 import pl.adamboguszewski.tictactoe.api.game.request.CreateNewGameRequest;
 import pl.adamboguszewski.tictactoe.api.game.response.CreateNewGameFailureResponse;
 import pl.adamboguszewski.tictactoe.api.game.response.CreateNewGameSuccessResponse;
@@ -17,8 +17,8 @@ public class CreateNewGameBean {
     public CreateNewGameRequest process(IncomingMessage message) {
         // If the incoming message is not correct, return null as players.
         if (isMessageCorrect(message)) {
-            PlayerRequest xPlayer = getPlayerRequestFromUser(message.getFrom());
-            PlayerRequest yPlayer = getPlayerRequestFromUser(message.getEntities().get(1).getUser());
+            PlayerApiEntity xPlayer = getPlayerRequestFromUser(message.getFrom());
+            PlayerApiEntity yPlayer = getPlayerRequestFromUser(message.getEntities().get(1).getUser());
 
             return new CreateNewGameRequest(xPlayer, yPlayer, Long.parseLong(message.getChat().getId()));
         } else {
@@ -30,9 +30,9 @@ public class CreateNewGameBean {
         return message.getEntities().size() > 1 && message.getEntities().get(1).getType().equals("text_mention");
     }
 
-    private PlayerRequest getPlayerRequestFromUser(User user) {
+    private PlayerApiEntity getPlayerRequestFromUser(User user) {
         String name = user.getUsername() == null ? user.getFirstName() + " " + user.getLastName() : user.getUsername();
-        return new PlayerRequest(user.getId(), name);
+        return new PlayerApiEntity(user.getId(), name);
     }
 
     // Process success message from API to telegram.

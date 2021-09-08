@@ -1,6 +1,6 @@
 package pl.adamboguszewski.tictactoe.server.application;
 
-import pl.adamboguszewski.tictactoe.api.game.PlayerRequest;
+import pl.adamboguszewski.tictactoe.api.game.PlayerApiEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -35,7 +35,7 @@ public class Player {
         this.name = name;
     }
 
-    public static Player fromPlayerRequest(PlayerRequest request) {
+    public static Player fromPlayerRequest(PlayerApiEntity request) {
         return new Player(request.getId(), request.getName());
     }
 }

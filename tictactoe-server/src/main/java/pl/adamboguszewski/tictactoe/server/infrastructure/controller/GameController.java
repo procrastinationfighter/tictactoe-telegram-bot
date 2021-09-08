@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import pl.adamboguszewski.tictactoe.api.game.PlayerApiEntity;
 import pl.adamboguszewski.tictactoe.api.game.request.CreateNewGameRequest;
 import pl.adamboguszewski.tictactoe.api.game.request.GetCurrentGameRequest;
 import pl.adamboguszewski.tictactoe.api.game.request.MakeAMoveRequest;
@@ -46,7 +47,12 @@ public class GameController {
     }
 
     private MakeAMoveResponse generateMakeAMoveResponseFromDto(MakeAMoveResponseDto dto) {
-        return new MakeAMoveSuccessResponse(dto.getChatId(), dto.getBoardState(), dto.getStatus(), dto.isXNext());
+        return new MakeAMoveSuccessResponse(dto.getChatId(),
+                dto.getBoardState(),
+                dto.getStatus(),
+                new PlayerApiEntity(dto.getxPlayer().getId(), dto.getxPlayer().getName()),
+                new PlayerApiEntity(dto.getoPlayer().getId(), dto.getoPlayer().getName()),
+                dto.isXNext());
     }
 
     @GetMapping("/{chatId}")
