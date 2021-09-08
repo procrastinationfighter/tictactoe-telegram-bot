@@ -1,6 +1,8 @@
 # Tic-Tac-Toe Telegram Bot
 ## Overview
 This project is a bot for Telegram application that uses Apache Camel, Spring Boot, Docker and a Postgresql Database. The only functionality is the possibility to play with another player a tic-tac-toe game on a Telegram chat. 
+## Modules
+The project consists of three modules: a spring server, a rest api to this server and an apache camel bot.
 ## How to run
 1. Download the repository. 
 2. Change `camel.component.telegram.authorization-token` in `tictactoe-bot/src/main/resources/application.properties` to the authorization token of your bot.
