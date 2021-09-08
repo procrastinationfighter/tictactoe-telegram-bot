@@ -7,14 +7,20 @@ import java.util.List;
 
 public class MakeAMoveResponseDto {
 
+    private final Long chatId;
     private final List<Tile> boardState;
     private final GameStatus status;
     private final boolean isXNext;
 
-    public MakeAMoveResponseDto(List<Tile> boardState, GameStatus status, boolean isXNext) {
+    public MakeAMoveResponseDto(Long chatId, List<Tile> boardState, GameStatus status, boolean isXNext) {
+        this.chatId = chatId;
         this.boardState = boardState;
         this.status = status;
         this.isXNext = isXNext;
+    }
+
+    public Long getChatId() {
+        return chatId;
     }
 
     public List<Tile> getBoardState() {

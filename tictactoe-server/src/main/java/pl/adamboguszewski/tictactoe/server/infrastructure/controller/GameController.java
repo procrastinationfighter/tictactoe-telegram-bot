@@ -35,18 +35,18 @@ public class GameController {
         }
     }
 
-    @PostMapping("/{chatId}")
-    public ResponseEntity<MakeAMoveResponse> makeAMove(@Valid @RequestBody MakeAMoveRequest request, @PathVariable Long chatId) {
+    @PostMapping("/move")
+    public ResponseEntity<MakeAMoveResponse> makeAMove(@Valid @RequestBody MakeAMoveRequest request) {
         try {
-            return ResponseEntity.ok(generateMakeAMoveResponseFromDto(service.makeAMove(request, chatId)));
+            return ResponseEntity.ok(generateMakeAMoveResponseFromDto(service.makeAMove(request)));
         } catch (Exception e) {
-            return new ResponseEntity<>(new MakeAMoveFailureResponse(e.getMessage(), 1L),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new MakeAMoveFailureResponse(request.getChatId(), e.getMessage(), 1L),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
     private MakeAMoveResponse generateMakeAMoveResponseFromDto(MakeAMoveResponseDto dto) {
-        return new MakeAMoveSuccessResponse(dto.getBoardState(), dto.getStatus(), dto.isXNext());
+        return new MakeAMoveSuccessResponse(dto.getChatId(), dto.getBoardState(), dto.getStatus(), dto.isXNext());
     }
 
     @GetMapping("/{chatId}")

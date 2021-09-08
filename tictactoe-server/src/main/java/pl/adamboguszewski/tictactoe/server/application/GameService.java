@@ -60,10 +60,10 @@ public class GameService {
         return game.getId();
     }
 
-    public MakeAMoveResponseDto makeAMove(MakeAMoveRequest request, Long chatId) {
-        log.debug("Got make a move request for chat " + chatId + ": " + new GsonBuilder().create().toJson(request));
+    public MakeAMoveResponseDto makeAMove(MakeAMoveRequest request) {
+        log.debug("Got make a move request for chat " + request.getChatId() + ": " + new GsonBuilder().create().toJson(request));
 
-        ActiveGame game = getGameAndValidateMakeAMoveParameters(request, chatId);
+        ActiveGame game = getGameAndValidateMakeAMoveParameters(request);
 
         if (game.isXNext()) {
             game.getBoardState().set(request.getTileNumber(), Tile.X);
@@ -78,12 +78,12 @@ public class GameService {
         if (newStatus.equals(GameStatus.GameActive)) {
             activeGameRepository.save(game);
             log.info("Made a move in the game no. " + game.getId());
-            return new MakeAMoveResponseDto(game.getBoardState(), newStatus, game.isXNext());
+            return new MakeAMoveResponseDto(request.getChatId(), game.getBoardState(), newStatus, game.isXNext());
         } else {
             activeGameRepository.delete(game);
             finishedGameRepository.save(new FinishedGame(game, newStatus));
             log.info("Game no. " + game.getId() + " finished. Result: " + newStatus);
-            return new MakeAMoveResponseDto(game.getBoardState(), newStatus, false);
+            return new MakeAMoveResponseDto(request.getChatId(), game.getBoardState(), newStatus, false);
         }
     }
 
@@ -124,8 +124,8 @@ public class GameService {
         }
     }
 
-    private ActiveGame getGameAndValidateMakeAMoveParameters(MakeAMoveRequest request, Long chatId) {
-        ActiveGame game = getActiveGameOrThrowException(chatId, request.getWhoPlayed(), request.getOtherPlayer());
+    private ActiveGame getGameAndValidateMakeAMoveParameters(MakeAMoveRequest request) {
+        ActiveGame game = getActiveGameOrThrowException(request.getChatId(), request.getWhoPlayed(), request.getOtherPlayer());
 
         if (request.getTileNumber() < 0 || request.getTileNumber() >= BOARD_SIZE) {
             throw new RuntimeException("Invalid tile number. Choose between 0 and " + (BOARD_SIZE - 1));

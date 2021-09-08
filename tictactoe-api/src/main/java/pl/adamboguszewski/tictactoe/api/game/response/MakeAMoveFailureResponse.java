@@ -1,13 +1,17 @@
 package pl.adamboguszewski.tictactoe.api.game.response;
 
-public class MakeAMoveFailureResponse implements MakeAMoveResponse {
+public class MakeAMoveFailureResponse extends TicTacToeResponse implements MakeAMoveResponse {
 
-    private final String message;
-    private final Long errorCode;
+    private String message;
+    private Long errorCode;
 
-    public MakeAMoveFailureResponse(String message, Long errorCode) {
+    public MakeAMoveFailureResponse(Long chatId, String message, Long errorCode) {
+        super(chatId);
         this.message = message;
         this.errorCode = errorCode;
+    }
+
+    public MakeAMoveFailureResponse() {
     }
 
     public String getMessage() {
@@ -16,5 +20,13 @@ public class MakeAMoveFailureResponse implements MakeAMoveResponse {
 
     public Long getErrorCode() {
         return errorCode;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setErrorCode(Long errorCode) {
+        this.errorCode = errorCode;
     }
 }

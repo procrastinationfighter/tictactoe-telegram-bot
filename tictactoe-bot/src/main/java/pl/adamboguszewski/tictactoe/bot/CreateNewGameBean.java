@@ -20,8 +20,6 @@ public class CreateNewGameBean {
             PlayerRequest xPlayer = getPlayerRequestFromUser(message.getFrom());
             PlayerRequest yPlayer = getPlayerRequestFromUser(message.getEntities().get(1).getUser());
 
-            System.out.println("Tworzymy nowego");
-
             return new CreateNewGameRequest(xPlayer, yPlayer, Long.parseLong(message.getChat().getId()));
         } else {
             return new CreateNewGameRequest(null, null, Long.parseLong(message.getChat().getId()));
