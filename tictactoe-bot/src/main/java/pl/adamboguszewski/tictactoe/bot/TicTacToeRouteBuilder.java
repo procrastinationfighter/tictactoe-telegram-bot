@@ -22,6 +22,7 @@ public class TicTacToeRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
         String botCommandText = "${body.text.substring(${body.entities[0].offset}, ${body.entities[0].length()})}";
         Predicate isCommand = simple("${body?.entities.size} > 0 && ${body?.entities[0].type} == 'bot_command'");
+        String apiBaseURL = "http://tictactoe-server:8080/tictactoe/api";
 
         // Default route: check command type and redirect it to its proper route.
         from("telegram:bots")
@@ -34,8 +35,8 @@ public class TicTacToeRouteBuilder extends RouteBuilder {
                                 .otherwise().log("Not recognized command: " + botCommandText).to("stub:nowhere")
                         .otherwise().process(exchange -> log.debug("Message not a command.")).to("stub:nowhere");
 
-        setNewGameRoutes();
-        setMoveRoutes();
+        setNewGameRoutes(apiBaseURL);
+        setMoveRoutes(apiBaseURL);
 
         from("direct:current")
                 .log("Current")
@@ -43,7 +44,7 @@ public class TicTacToeRouteBuilder extends RouteBuilder {
                 .to("telegram:bots");
     }
 
-    private void setNewGameRoutes() {
+    private void setNewGameRoutes(String apiBaseURL) {
         // Routes for the new game command.
 
         // Basic route: check if command is correct.
@@ -60,8 +61,8 @@ public class TicTacToeRouteBuilder extends RouteBuilder {
                 .marshal().json(JsonLibrary.Jackson)
                 .setHeader(Exchange.HTTP_METHOD, constant("POST"))
                 .setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
-                .to("http://localhost:8080/tictactoe/api?throwExceptionOnFailure=false")
-                .choice()   // [todo] unmarshalling does not work
+                .to(apiBaseURL + "?throwExceptionOnFailure=false")
+                .choice()
                     .when(simple("${header.CamelHttpResponseCode} == 200")).to("direct:newgamesuccess")
                     .otherwise().to("direct:newgamefailure");
 
@@ -76,7 +77,7 @@ public class TicTacToeRouteBuilder extends RouteBuilder {
                 .bean(CreateNewGameBean.class).to("telegram:bots");
     }
 
-    private void setMoveRoutes() {
+    private void setMoveRoutes(String apiBaseURL) {
         // Routes for the move command.
 
         // Basic route: check if command is correct.
@@ -94,7 +95,7 @@ public class TicTacToeRouteBuilder extends RouteBuilder {
                 .log(body().toString())
                 .setHeader(Exchange.HTTP_METHOD, constant("POST"))
                 .setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
-                .to("http://localhost:8080/tictactoe/api/move?throwExceptionOnFailure=false")
+                .to(apiBaseURL + "/move?throwExceptionOnFailure=false")
                 .process(exchange -> log.info("The response code is: {}", exchange.getIn().getHeader(Exchange.HTTP_RESPONSE_CODE)))
                 .choice()
                     .when(simple("${header.CamelHttpResponseCode} == 200")).to("direct:movesuccess")

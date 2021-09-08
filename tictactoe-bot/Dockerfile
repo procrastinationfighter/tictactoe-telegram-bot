@@ -1,6 +1,5 @@
-FROM maven:3.5-jdk-14
-COPY src /tictactoe/server/src
-COPY pom.xml /tictactoe/server
-WORKDIR /tictactoe/server
+FROM maven:3.8.2-openjdk-16
+COPY .. /tictactoe
+WORKDIR /tictactoe
 RUN mvn clean package
-CMD ["java","-jar","target/tictactoe-server-1.0-SNAPSHOT.jar"]
+CMD ["java","-jar","tictactoe-bot/target/tictactoe-bot-1.0-SNAPSHOT.jar"]
